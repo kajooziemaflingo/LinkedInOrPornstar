@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Guess the Folder</title>
+  <title>LinkedIn, or Pornstar?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -38,175 +38,218 @@
     #score {
       font-weight: bold;
       font-size: 1.2rem;
-	  #wrong-icon {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  font-size: 8rem;
-  color: red;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-  z-index: 10;
-  pointer-events: none;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-#timer {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 1rem auto;
-  text-align: center;
-  color: #ffa500;
-}
-
-
-#wrong-icon.show {
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-}
-
     }
-	#splash-screen {
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(30, 30, 30, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
 
-#splash-content {
-  text-align: center;
-  max-width: 500px;
-  padding: 2rem;
-  background-color: #222;
-  border-radius: 12px;
-  box-shadow: 0 0 20px black;
-}
+    #wrong-icon {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      font-size: 8rem;
+      color: red;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      z-index: 10;
+      pointer-events: none;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
 
-#splash-content h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
+    #wrong-icon.show {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
 
-#splash-content p {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-}
+    #timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 1rem auto;
+      text-align: center;
+      color: #ffa500;
+    }
 
-#start-button {
-  padding: 1rem 2rem;
-  font-size: 1.3rem;
-  border: none;
-  border-radius: 8px;
-  background-color: #28a745;
-  color: white;
-  cursor: pointer;
-  margin-top: 1rem;
-}
+    #splash-screen {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(30, 30, 30, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
 
-#start-button:hover {
-  background-color: #218838;
-}
+    #splash-content {
+      text-align: center;
+      max-width: 500px;
+      padding: 2rem;
+      background-color: #222;
+      border-radius: 12px;
+      box-shadow: 0 0 20px black;
+    }
 
-#gameover-screen {
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(10, 10, 10, 0.95);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
+    #splash-content h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
 
-#gameover-content {
-  text-align: center;
-  max-width: 500px;
-  padding: 2rem;
-  background-color: #111;
-  border-radius: 12px;
-  box-shadow: 0 0 20px black;
-}
+    #splash-content p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
 
-#gameover-content h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
+    #start-button {
+      padding: 1rem 2rem;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
 
-#gameover-content button {
-  margin: 1rem 0.5rem 0;
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    #start-button:hover {
+      background-color: #218838;
+    }
 
-#restart-button {
-  background-color: #007bff;
-  color: white;
-}
+    #gameover-screen {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(10, 10, 10, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
 
-#restart-button:hover {
-  background-color: #0056b3;
-}
+    #gameover-content {
+      text-align: center;
+      max-width: 500px;
+      padding: 2rem;
+      background-color: #111;
+      border-radius: 12px;
+      box-shadow: 0 0 20px black;
+    }
 
-#share-button {
-  background-color: #ffc107;
-  color: #333;
-}
+    #gameover-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
 
-#share-button:hover {
-  background-color: #e0a800;
-}
+    #gameover-content button {
+      margin: 1rem 0.5rem 0;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
 
-#final-score, #final-message {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-}
+    #restart-button {
+      background-color: #007bff;
+      color: white;
+    }
 
+    #restart-button:hover {
+      background-color: #0056b3;
+    }
 
+    #share-button {
+      background-color: #ffc107;
+      color: #333;
+    }
 
+    #share-button:hover {
+      background-color: #e0a800;
+    }
+
+    #final-score, #final-message {
+      font-size: 1.3rem;
+      margin: 0.5rem 0;
+    }
+
+    /* Button disabled state for preventing double clicks */
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Game buttons styling improvements */
+    #btn-linkedin, #btn-pornstar {
+      border: 2px solid #333;
+      border-radius: 8px;
+      background-color: #fff;
+      transition: all 0.2s ease;
+    }
+
+    #btn-linkedin:hover:not(:disabled) {
+      background-color: #0077b5;
+      color: white;
+      border-color: #0077b5;
+    }
+
+    #btn-pornstar:hover:not(:disabled) {
+      background-color: #ff6b6b;
+      color: white;
+      border-color: #ff6b6b;
+    }
+
+    /* Loading state styling */
+    .loading {
+      opacity: 0.7;
+    }
+
+    /* Photo container for better image display */
+    #photo {
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
-<div id="splash-screen">
-  <div id="splash-content">
-    <h2>Welcome to the game!</h2>
-    <p>Are you ready to begin?</p>
-    <p>You’ll get <strong>10 pictures per round</strong> and only <strong>15 seconds</strong> to guess.</p>
-    <button id="start-button">Let's Go!</button>
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <div id="splash-content">
+      <h2>This is LinkedIn or Pornstar!</h2>
+      <p>All of these photos were taken from either LinkedIn or the Internet Adult Film Database! Can you guess which is which?</p>
+      <p>You'll get <strong>10 pictures per round</strong> and only <strong>15 seconds</strong> to guess.</p>
+      <button id="start-button">Let's Go!</button>
+    </div>
   </div>
-</div>
-<div id="gameover-screen">
-  <div id="gameover-content">
-    <h2>Game Over!</h2>
-    <p>Thanks for playing.</p>
-	<p id="final-score"></p>
-    <p id="final-message"></p>
-    <button id="restart-button">Play Again?</button>
-    <button id="share-button">Share Game!</button>
-  </div>
-</div>
 
-  <h1>Guess the Folder</h1>
+  <!-- Game Over Screen -->
+  <div id="gameover-screen">
+    <div id="gameover-content">
+      <h2>Game Over!</h2>
+      <p>Thanks for playing.</p>
+      <p id="final-score"></p>
+      <p id="final-message"></p>
+      <button id="restart-button">Play Again?</button>
+      <button id="share-button">Share Game!</button>
+    </div>
+  </div>
+
+  <!-- Wrong Answer Animation -->
+  <div id="wrong-icon">❌</div>
+
+  <!-- Main Game Interface -->
+  <h1>LinkedIn, or Pornstar?</h1>
   <img id="photo" src="" alt="Random photo">
   <div class="buttons">
-    <button id="btn-folder1">FOLDER1</button>
-    <button id="btn-folder2">FOLDER2</button>
+    <button id="btn-linkedin">LinkedIn</button>
+    <button id="btn-pornstar">Pornstar</button>
   </div>
   <div id="feedback"></div>
   <div id="score">Score: 0 / 0</div>
   <div id="timer">⏳ 15s</div>
+
   <script src="script.js"></script>
 </body>
 </html>

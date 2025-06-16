@@ -15,60 +15,50 @@ const maxPerRound = 10;
 let correctFolder = '';
 let correctGuesses = 0;
 let totalGuesses = 0;
-let gameActive = true; // Prevent double-clicking
+let hasGuessed = false; // Simple flag to prevent multiple guesses per round
 
 const photo = document.getElementById('photo');
 const feedback = document.getElementById('feedback');
 const scoreDisplay = document.getElementById('score');
 
-const btn1 = document.getElementById('btn-linkedin');
-const btn2 = document.getElementById('btn-pornstar');
+const btn1 = document.getElementById('btn-folder1');
+const btn2 = document.getElementById('btn-folder2');
 
-btn1.addEventListener('click', () => handleGuess('linkedin'));
-btn2.addEventListener('click', () => handleGuess('pornstar'));
+btn1.addEventListener('click', () => handleGuess('folder1'));
+btn2.addEventListener('click', () => handleGuess('folder2'));
 
 let timerInterval = null;
 let timeRemaining = 15;
 
-function fetchImage(retryCount = 0) {
+function fetchImage() {
   if (currentRound >= maxPerRound) {
     endGame();
     return;
   }
 
-  // Prevent infinite loops if we run out of unique images
-  if (retryCount >= 50) {
-    console.warn('Too many retries fetching unique image, ending game');
-    endGame();
-    return;
-  }
-
   feedback.textContent = 'Loading...';
+  hasGuessed = false; // Reset for new round
 
   fetch('/api/get-random-image')
     .then(res => res.json())
     .then(data => {
       if (usedImages.has(data.imageUrl)) {
-        // Skip duplicates by retrying with counter
-        fetchImage(retryCount + 1);
+        // Skip duplicates by retrying
+        fetchImage();
         return;
       }
 
       photo.src = data.imageUrl;
-      // Convert to lowercase to match button values
-      correctFolder = data.actualFolder.toLowerCase();
+      correctFolder = data.actualFolder;
       usedImages.add(data.imageUrl);
       currentRound++;
       feedback.textContent = '';
-      gameActive = true; // Re-enable interactions
       startTimer(); // Start countdown after image is loaded
 
     })
     .catch(err => {
       feedback.textContent = 'Error loading image.';
       console.error(err);
-      // Try again after a delay if there's an error
-      setTimeout(() => fetchImage(retryCount + 1), 2000);
     });
 }
 
@@ -83,25 +73,28 @@ function startTimer() {
 
     if (timeRemaining <= 0) {
       clearInterval(timerInterval);
-      gameActive = false; // Disable further clicks
-      feedback.textContent = `⏱️ Time's up! It was from ${correctFolder.toUpperCase()}`;
-      showWrongIcon();
-      totalGuesses++;
-      updateScore();
+      
+      // Only process timeout if user hasn't guessed yet
+      if (!hasGuessed) {
+        hasGuessed = true; // Prevent further guesses
+        feedback.textContent = `⏱️ Time's up! It was from ${correctFolder.toUpperCase()}`;
+        showWrongIcon();
+        totalGuesses++;
+        updateScore();
 
-      setTimeout(() => {
-        correctFolder = '';
-        fetchImage();
-      }, 1500);
+        setTimeout(() => {
+          fetchImage(); // Move to next image
+        }, 1500);
+      }
     }
   }, 1000);
 }
 
 function handleGuess(userGuess) {
-  // Prevent double-clicking and ensure game is active
-  if (!gameActive || !correctFolder) return;
+  // Prevent multiple guesses per round
+  if (hasGuessed || !correctFolder) return;
   
-  gameActive = false; // Disable further clicks
+  hasGuessed = true; // Mark that user has guessed
   clearInterval(timerInterval); // Stop timer on guess
 
   totalGuesses++;
@@ -118,22 +111,15 @@ function handleGuess(userGuess) {
 
   updateScore();
 
+  // Always move to next image after a delay, regardless of correct/incorrect
   setTimeout(() => {
-    correctFolder = '';
-    fetchImage();
+    fetchImage(); // Move to next image
   }, 1500);
 }
 
 function updateTimerDisplay() {
   const timerElement = document.getElementById('timer');
   timerElement.textContent = `⏳ ${timeRemaining}s`;
-  
-  // Add visual urgency when time is running low
-  if (timeRemaining <= 5) {
-    timerElement.style.color = '#ff4444';
-  } else {
-    timerElement.style.color = '#ffa500';
-  }
 }
 
 function updateScore() {
@@ -150,13 +136,11 @@ function fireConfetti() {
 
 function showWrongIcon() {
   const wrongIcon = document.getElementById('wrong-icon');
-  if (wrongIcon) {
-    wrongIcon.classList.add('show');
+  wrongIcon.classList.add('show');
 
-    setTimeout(() => {
-      wrongIcon.classList.remove('show');
-    }, 1000);
-  }
+  setTimeout(() => {
+    wrongIcon.classList.remove('show');
+  }, 1000);
 }
 
 document.getElementById('restart-button').addEventListener('click', () => {
@@ -165,8 +149,8 @@ document.getElementById('restart-button').addEventListener('click', () => {
   currentRound = 0;
   correctGuesses = 0;
   totalGuesses = 0;
+  hasGuessed = false;
   correctFolder = '';
-  gameActive = true;
   clearInterval(timerInterval); // Clear any running timer
   updateScore();
 
@@ -176,60 +160,32 @@ document.getElementById('restart-button').addEventListener('click', () => {
 });
 
 document.getElementById('share-button').addEventListener('click', () => {
-  // Use current page URL instead of hardcoded value
-  const url = window.location.href;
-  
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url)
-      .then(() => {
-        alert('Game link copied to clipboard!');
-      })
-      .catch(err => {
-        console.error('Clipboard copy failed:', err);
-        fallbackCopyText(url);
-      });
-  } else {
-    fallbackCopyText(url);
-  }
+  const url = 'https://playthegame.com';
+  navigator.clipboard.writeText(url)
+    .then(() => {
+      alert('Link copied to clipboard!');
+    })
+    .catch(err => {
+      console.error('Clipboard copy failed:', err);
+      alert('Failed to copy link.');
+    });
 });
-
-// Fallback for browsers that don't support clipboard API
-function fallbackCopyText(text) {
-  const textArea = document.createElement('textarea');
-  textArea.value = text;
-  textArea.style.position = 'fixed';
-  textArea.style.left = '-999999px';
-  textArea.style.top = '-999999px';
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-  
-  try {
-    document.execCommand('copy');
-    alert('Game link copied to clipboard!');
-  } catch (err) {
-    console.error('Fallback copy failed:', err);
-    alert(`Copy this link: ${text}`);
-  }
-  
-  document.body.removeChild(textArea);
-}
 
 function endGame() {
   clearInterval(timerInterval); // Make sure timer is stopped
-  gameActive = false;
+  hasGuessed = true; // Disable any further interaction
   
   const finalScore = correctGuesses;
-  const scoreText = `You got ${finalScore} out of ${maxPerRound} correct.`;
+  const scoreText = `You got ${finalScore} out of 10 correct.`;
 
   let message = '';
-  if (finalScore === maxPerRound) {
-    message = "Perfect score! You really know your stuff!";
-  } else if (finalScore >= Math.floor(maxPerRound * 0.8)) {
+  if (finalScore === 10) {
+    message = "You really know your stuff!";
+  } else if (finalScore >= 8) {
     message = "Pretty good!";
-  } else if (finalScore >= Math.floor(maxPerRound * 0.6)) {
+  } else if (finalScore >= 6) {
     message = "A little more practice!";
-  } else if (finalScore >= Math.floor(maxPerRound * 0.2)) {
+  } else if (finalScore >= 2) {
     message = "You're a dunce!";
   } else {
     message = "Were you even trying?";
